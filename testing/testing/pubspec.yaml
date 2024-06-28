@@ -1,0 +1,28 @@
+name: testing
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  testing_package:
+    path: packages/testing_package
+
+  provider:
+    git:
+      url: https://github.com/rrousselGit/provider.git
+      path: packages/provider
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
