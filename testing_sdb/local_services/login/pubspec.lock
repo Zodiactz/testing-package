@@ -33,6 +33,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  authen_package:
+    dependency: "direct main"
+    description:
+      path: "packages/authen_package"
+      relative: true
+    source: path
+    version: "0.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -232,13 +239,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  login_package:
-    dependency: "direct main"
-    description:
-      path: "packages/login_package"
-      relative: true
-    source: path
-    version: "0.0.1"
   matcher:
     dependency: transitive
     description:
