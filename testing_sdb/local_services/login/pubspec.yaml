@@ -14,8 +14,8 @@ dependencies:
   flutter_localization: ^0.2.0
   intl: any
   country_flags: ^3.0.0
-  my_text_form_field:
-    path: packages/my_text_form_field
+  login_package:
+    path: packages/login_package
   # path: ^1.8.0
 
 dev_dependencies:

@@ -1,5 +1,3 @@
-library my_text_form_field;
-
 import 'package:flutter/material.dart';
 
 class MyTextFormField extends StatelessWidget {

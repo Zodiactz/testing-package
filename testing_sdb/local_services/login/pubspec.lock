@@ -232,6 +232,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  login_package:
+    dependency: "direct main"
+    description:
+      path: "packages/login_package"
+      relative: true
+    source: path
+    version: "0.0.1"
   matcher:
     dependency: transitive
     description:
@@ -264,13 +271,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  my_text_form_field:
-    dependency: "direct main"
-    description:
-      path: "packages/my_text_form_field"
-      relative: true
-    source: path
-    version: "0.0.1"
   nested:
     dependency: transitive
     description:
