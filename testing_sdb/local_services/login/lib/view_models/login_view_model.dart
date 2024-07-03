@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:login/models/user.dart';
-import '../services/auth_service.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
+import 'package:login/models/user.dart';
 
 class LogInViewModel with ChangeNotifier {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   final AuthService _authService = AuthService();
   UserModel? _loggedInUser;
   bool _passwordVisible = false;
@@ -30,16 +28,15 @@ class LogInViewModel with ChangeNotifier {
 
   String? validateEmail(String? value) {
     return (value == null || value.isEmpty)
-        ? 'Email is required.' // TODO: This is a workaround to get the value from the locale data
-        : (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                .hasMatch(value))
-            ? 'Enter a valid email.' // TODO: This is a workaround to get the value from the locale data
+        ? 'Email is required.'
+        : (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value))
+            ? 'Enter a valid email.'
             : null;
   }
 
   String? validatePassword(String? value) {
     return (value == null || value.isEmpty)
-        ? 'Password is required.' // TODO: This is a workaround to get the value from the locale data
+        ? 'Password is required.'
         : null;
   }
 
@@ -48,21 +45,18 @@ class LogInViewModel with ChangeNotifier {
     passwordError = validatePassword(passwordVal);
 
     if (emailVal.isEmpty && passwordVal.isEmpty) {
-      allError =
-          'Email and Password are required.'; // TODO: This is a workaround to get the value from the locale data
+      allError = 'Email and Password are required.';
     } else {
       allError = null;
     }
 
-    _showValidationMessage =
-        emailError != null || passwordError != null || allError != null;
+    _showValidationMessage = emailError != null || passwordError != null || allError != null;
     notifyListeners();
 
     return !_showValidationMessage;
   }
 
-  Future<Map<String, String>> getValidatedValues(
-      String emailVal, String passwordVal) async {
+  Future<Map<String, String>> getValidatedValues(String emailVal, String passwordVal) async {
     bool isValid = await validateAll(emailVal, passwordVal);
 
     if (!isValid) {
@@ -79,5 +73,27 @@ class LogInViewModel with ChangeNotifier {
       notifyListeners();
       return {};
     }
+  }
+
+  Future<void> login(String email, String password) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    if (await validateAll(email, password)) {
+      try {
+        final user = await _authService.login(email, password);
+        if (user != null) {
+          _loggedInUser = user;
+        } else {
+          _error = 'Login failed';
+        }
+      } catch (e) {
+        _error = 'An error occurred: $e';
+      }
+    }
+
+    _isLoading = false;
+    notifyListeners();
   }
 }
