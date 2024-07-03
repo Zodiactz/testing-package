@@ -5,9 +5,7 @@ import 'package:login/view_models/login_view_model.dart';
 class ValidationMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
-    return Consumer<LogInViewModel>(
-      builder: (context, loginvm, child) {
+    return Consumer<LogInViewModel>(builder: (context, loginvm, child) {
       return loginvm.showValidationMessage
           ? Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
@@ -37,7 +35,8 @@ class ValidationMessageWidget extends StatelessWidget {
                               ),
                             )
                           : Text(
-                              '${loginvm.tenancyError ?? ''} ${loginvm.emailError ?? ''} ${loginvm.passwordError ?? ''}'
+                              //'${loginvm.tenancyError ?? ''} ${loginvm.emailError ?? ''} ${loginvm.passwordError ?? ''}'
+                              ' ${loginvm.emailError ?? ''} ${loginvm.passwordError ?? ''}'
                                   .trim(),
                               style: TextStyle(
                                 color: Colors.red[800],
@@ -50,7 +49,6 @@ class ValidationMessageWidget extends StatelessWidget {
               ),
             )
           : SizedBox();
-      }
-    );
+    });
   }
 }

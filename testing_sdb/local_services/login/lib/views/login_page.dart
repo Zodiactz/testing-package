@@ -1,11 +1,16 @@
+import 'dart:convert';
 import 'package:authen_package/authen.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:login/constants/api_path.dart';
 import 'package:provider/provider.dart';
 import 'package:login/view_models/login_view_model.dart';
 import 'package:login/view_models/locales.dart';
 import 'package:login/utils/validation_message.dart';
+import 'package:http/http.dart' as http;
+import 'package:login/models/user.dart';
+import '../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,16 +22,20 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final tenancyController = TextEditingController();
+  //final tenancyController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final tenancyFocusNode = FocusNode();
+  //final tenancyFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
 
   late FlutterLocalization _flutterLocalization;
 
   late String _currentLocale;
+  final AuthService _authService = AuthService();
+  UserModel? _loggedInUser;
+  bool _isLoading = false;
+  String? _error;
 
   @override
   void initState() {
@@ -37,13 +46,69 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    tenancyController.dispose();
+    //tenancyController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    tenancyFocusNode.dispose();
+    //tenancyFocusNode.dispose();
     emailFocusNode.dispose();
     passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  Future<void> login(BuildContext context, LogInViewModel loginvm, String email, String password) async {
+    
+      _isLoading = true;
+      _error = null;  // Clear previous error
+    
+
+    if (_formKey.currentState!.validate()) {
+      bool isValid = await loginvm.validateAll(
+        email,
+        password,
+      );
+
+      if (isValid) {
+        Map<String, String> encodedValues = await loginvm.getValidatedValues(
+          email,
+          password,
+        );
+        print('Email: $email');
+        print('Password: $password');
+        print('Email (encoded): ${encodedValues['email']}');
+        print('Password (encoded): ${encodedValues['password']}');
+
+        try {
+          final user = await _authService.login(email, password);
+          if (user != null) {
+            _loggedInUser = user;
+            print('Logged in as: ${_loggedInUser?.username}');
+
+            Navigator.pushNamed(
+              context,
+              '/home',
+              arguments: {
+                'username': user.username,
+                'email': email,
+              },
+            );
+          } else {
+            setState(() {
+              _error = 'Login failed';
+              print(_error);
+            });
+          }
+        } catch (e) {
+          setState(() {
+            _error = 'An error occurred: $e';
+            print(_error);
+          });
+        }
+      }
+    }
+
+  
+      _isLoading = false;
+    
   }
 
   @override
@@ -136,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
 
                                       SizedBox(height: 10),
 
-                                      // Tenancy TextFormField
+                                      /* // Tenancy TextFormField
                                       MyTextFormField(
                                         controller: tenancyController,
                                         height: 52,
@@ -155,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                                         },
                                       ),
 
-                                      SizedBox(height: 24),
+                                      SizedBox(height: 24),*/
 
                                       // Email TextFormField
                                       MyTextFormField(
@@ -213,7 +278,12 @@ class _LoginPageState extends State<LoginPage> {
                                       // Login Button
                                       ElevatedButton(
                                         onPressed: () {
-                                          login(loginvm);
+                                          login(
+                                            context,
+                                            loginvm,
+                                            emailController.text,
+                                            passwordController.text,      
+                                          );
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.orangeAccent,
@@ -281,7 +351,7 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             _setLocale("en");
                           },
-                          icon: CountryFlag.fromCountryCode(
+                          icon: CountryFlags.flag(
                             'GB',
                             width: 30,
                             height: 20,
@@ -293,7 +363,7 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             _setLocale("th");
                           },
-                          icon: CountryFlag.fromCountryCode(
+                          icon: CountryFlags.flag(
                             'TH',
                             width: 30,
                             height: 20,
@@ -324,37 +394,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
-
-  // Functions
-  void login(LogInViewModel loginvm) async {
-    if (_formKey.currentState!.validate()) {
-      bool isValid = await loginvm.validateAll(
-        tenancyController.text,
-        emailController.text,
-        passwordController.text,
-      );
-
-      if (isValid) {
-        try {
-          Map<String, String> encodedValues = await loginvm.getValidatedValues(
-            tenancyController.text,
-            emailController.text,
-            passwordController.text,
-          );
-          print('Tenancy: ${tenancyController.text}');
-          print('Email: ${emailController.text}');
-          print('Password: ${passwordController.text}');
-          print('Tenancy: ${encodedValues['tenancy']}');
-          print('Email: ${encodedValues['email']}');
-          print('Password: ${encodedValues['password']}');
-
-          Navigator.pushNamed(context, '/home');
-        } catch (e) {
-          print(e);
-        }
-      }
-    }
   }
 
   void _setLocale(String locale) {

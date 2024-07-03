@@ -12,8 +12,9 @@ dependencies:
     sdk: flutter
   provider: ^6.1.2
   flutter_localization: ^0.2.0
+  country_flags: ^1.1.0
   intl: any
-  country_flags: ^3.0.0
+  http: ^0.13.3
   authen_package:
     path: packages/authen_package
   # path: ^1.8.0
