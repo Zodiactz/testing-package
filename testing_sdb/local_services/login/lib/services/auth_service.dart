@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:login/constants/api_path.dart';
 import 'package:login/models/user.dart';
 
 class AuthService {
-  final String baseUrl = "https://dummyjson.com/users"; // Endpoint to fetch users
-
   Future<UserModel?> login(String email, String password) async {
-    final url = Uri.parse(baseUrl);
+    final url = Uri.parse(ApiUrl.baseUrl);
     final headers = {
       'Content-Type': 'application/json',
     };
