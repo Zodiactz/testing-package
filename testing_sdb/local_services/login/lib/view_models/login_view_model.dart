@@ -57,43 +57,39 @@ class LogInViewModel with ChangeNotifier {
   }
 
   Future<Map<String, String>> getValidatedValues(String emailVal, String passwordVal) async {
-    bool isValid = await validateAll(emailVal, passwordVal);
+  bool isValid = await validateAll(emailVal, passwordVal);
 
-    if (!isValid) {
-      throw Exception("Validation failed");
-    }
-
-    if (isValid) {
-      return {
-        'email': base64Encode(utf8.encode(emailVal)),
-        'password': base64Encode(utf8.encode(passwordVal)),
-      };
-    } else {
-      _showValidationMessage = true;
-      notifyListeners();
-      return {};
-    }
+  if (!isValid) {
+    throw Exception("Validation failed");
   }
 
-  Future<void> login(String email, String password) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+  return {
+    'email': base64Encode(utf8.encode(emailVal)),
+    'password': base64Encode(utf8.encode(passwordVal)),
+  };
+}
 
-    if (await validateAll(email, password)) {
-      try {
-        final user = await _authService.login(email, password);
-        if (user != null) {
-          _loggedInUser = user;
-        } else {
-          _error = 'Login failed';
-        }
-      } catch (e) {
-        _error = 'An error occurred: $e';
+Future<void> login(String email, String password) async {
+  _isLoading = true;
+  _error = null;
+  notifyListeners();
+
+  try {
+    final validatedValues = await getValidatedValues(email, password);
+    if (validatedValues.isNotEmpty) {
+      final user = await _authService.login(validatedValues['email']!, validatedValues['password']!);
+      if (user != null) {
+        _loggedInUser = user;
+      } else {
+        _error = 'Login failed';
       }
     }
-
-    _isLoading = false;
-    notifyListeners();
+  } catch (e) {
+    _error = 'An error occurred: $e';
   }
+
+  _isLoading = false;
+  notifyListeners();
+}
+
 }
