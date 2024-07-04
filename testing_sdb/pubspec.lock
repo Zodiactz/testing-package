@@ -150,12 +150,11 @@ packages:
   http:
     dependency: transitive
     description:
-      path: "pkgs/http"
-      ref: HEAD
-      resolved-ref: "8d893851904d8cd292a66e39812b59aca2cc4d96"
-      url: "https://github.com/dart-lang/http.git"
-    source: git
-    version: "1.2.2-wip"
+      name: http
+      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.13.6"
   http_parser:
     dependency: transitive
     description:

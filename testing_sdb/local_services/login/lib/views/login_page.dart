@@ -179,6 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                                       ElevatedButton(
                                         onPressed: () async {
                                           await loginvm.login(
+                                            context,
                                             emailController.text,
                                             passwordController.text,
                                           );

@@ -1,6 +1,6 @@
 import 'package:flutter_localization/flutter_localization.dart';
 
-const List<MapLocale> LOCALES = [
+const List<MapLocale> LOCALES = [ //ลองเปลี่ยนไปใช้ของflutterเลยดู
     MapLocale("en", LocaleData.EN),
     MapLocale("th", LocaleData.TH),
   ];
